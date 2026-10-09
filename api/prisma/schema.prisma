@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum MemberStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+model Category {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique @db.VarChar(60)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  books Book[]
+
+  @@map("categories")
+}
+
+model Author {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(120)
+  bio       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  books Book[]
+
+  @@map("authors")
+}
+
+model Book {
+  id              String   @id @default(uuid()) @db.Uuid
+  isbn            String   @unique @db.VarChar(13)
+  title           String   @db.VarChar(200)
+  publishedYear   Int?     @map("published_year")
+  totalCopies     Int      @default(1) @map("total_copies")
+  availableCopies Int      @default(1) @map("available_copies")
+  categoryId      String   @map("category_id") @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  authors  Author[]
+  loans    Loan[]
+
+  @@index([categoryId])
+  @@index([title])
+  @@map("books")
+}
+
+model Member {
+  id        String       @id @default(uuid()) @db.Uuid
+  name      String       @db.VarChar(120)
+  email     String       @unique @db.VarChar(255)
+  status    MemberStatus @default(ACTIVE)
+  createdAt DateTime     @default(now()) @map("created_at")
+  updatedAt DateTime     @updatedAt @map("updated_at")
+
+  loans Loan[]
+
+  @@map("members")
+}
+
+model Loan {
+  id         String    @id @default(uuid()) @db.Uuid
+  bookId     String    @map("book_id") @db.Uuid
+  memberId   String    @map("member_id") @db.Uuid
+  borrowedAt DateTime  @default(now()) @map("borrowed_at")
+  dueAt      DateTime  @map("due_at")
+  returnedAt DateTime? @map("returned_at")
+  lateFee    Decimal   @default(0) @map("late_fee") @db.Decimal(8, 2)
+
+  book   Book   @relation(fields: [bookId], references: [id], onDelete: Restrict)
+  member Member @relation(fields: [memberId], references: [id], onDelete: Restrict)
+
+  @@index([memberId, returnedAt])
+  @@index([bookId])
+  @@map("loans")
+}
