@@ -1,5 +1,27 @@
+# Dependencies
 node_modules
-# Keep environment variables out of version control
-.env
 
+# Build output
+/dist
+
+# Test coverage
+/coverage
+
+# Logs
+*.log
+npm-debug.log*
+
+# Keep environment variables out of version control (.env.example is committed)
+.env
+.env.*
+!.env.example
+
+# Generated Prisma Client (rebuilt by `npx prisma generate`)
 /src/generated/prisma
+
+# AI tool configs created by the Prisma CLI (Claude Code config lives at the repo root)
+.agents/
+.claude/
+.cursor/
+.devin/
+.windsurf/

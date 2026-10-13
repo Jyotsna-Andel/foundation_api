@@ -1,0 +1,16 @@
+# Personal Claude Code files (never commit)
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Environment files anywhere in the repo (.env.example is committed)
+.env
+.env.*
+!.env.example
+
+# OS / editor files
+.DS_Store
+Thumbs.db
+.idea/
+
+# Logs
+*.log
