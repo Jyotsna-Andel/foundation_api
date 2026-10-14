@@ -1,6 +1,6 @@
 # ADR-0004: Global exception filter and error response format
 
-- **Status:** Proposed (implementation is Step 13)
+- **Status:** Accepted (implemented 2026-10-14 in `api/src/common/filters/all-exceptions.filter.ts`)
 - **Date:** 2026-10-12
 
 ## Context

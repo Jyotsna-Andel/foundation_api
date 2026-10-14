@@ -34,8 +34,8 @@ Foundation_API/
         ├── main.ts            # bootstrap: prefix, pipes, Swagger
         ├── app.module.ts      # root module
         ├── prisma/            # PrismaModule (global) + PrismaService
-        ├── common/            # cross-cutting: filters, pipes ⏳
-        ├── categories/        # feature module ✅
+        ├── common/            # cross-cutting: filters/ (exception filter) ✅, transforms/ (trim) ✅
+        ├── categories/        # feature module ✅ (authors/, members/, books/, loans/ follow the same layout ✅)
         │   ├── dto/
         │   ├── categories.controller.ts
         │   ├── categories.service.ts
@@ -52,7 +52,7 @@ flowchart LR
     CT --> SV[Service<br/>business logic]
     SV --> PS[PrismaService<br/>PrismaClient + pg adapter]
     PS --> DB[(PostgreSQL)]
-    CT -. exception .-> EF[Global exception filter ⏳<br/>uniform error JSON]
+    CT -. exception .-> EF[Global exception filter<br/>uniform error JSON]
     SV -. exception .-> EF
     PS -. Prisma error .-> EF
     EF --> C
@@ -74,7 +74,7 @@ flowchart LR
 | Validation   | Global `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`, `transform`)         | ✅     |
 | Shutdown     | `app.enableShutdownHooks()` → `PrismaService.onModuleDestroy`                      | ✅     |
 | API docs     | Swagger at `/docs`                                                                 | ✅     |
-| Errors       | `AllExceptionsFilter` via `APP_FILTER`                                             | ⏳     |
+| Errors       | `AllExceptionsFilter` via `APP_FILTER` | ✅ |
 
 ## Data model
 

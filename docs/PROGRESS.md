@@ -3,11 +3,11 @@
 ## Current status
 
 - **Phase:** 3: Feature modules (CRUD only for now; business rules later)
-- **Done last:** Categories CRUD module; Claude Code setup (gitignores, settings, hooks, docs)
-- **Next step:** Step 13: global exception filter (`api/src/common/filters/all-exceptions.filter.ts`, registered via `APP_FILTER`), then retest Categories error cases
-- **Then:** Authors → Members → Books → Loans CRUD
-- **Open decisions:** local database setup: Docker Compose vs native PostgreSQL (replacing `prisma dev`); Docker Desktop licensing to be checked with IT
-- **Pending:** CHECK-constraint migration (Step 8, not created yet); Categories Swagger test cases not yet confirmed
+- **Done last:** Unit tests: 46 passing (all 5 services, exception filter, Book/Member DTO validation), ~89% line coverage; README, `api/README.md`, `.env.example`. Before that: all CRUD modules.
+- **Next step:** Finish WSL 2 install → Docker Compose Postgres → DB-backed Swagger test pass; commit
+- **Then:** CHECK-constraint migration → seed script → e2e tests (need DB) → CI
+- **Open decisions:** Docker Compose chosen for local Postgres. Docker Desktop installed, but the engine can't start until WSL 2 is installed (`wsl --install --no-distribution` as admin + restart); IT licensing confirmation pending
+- **Pending:** exception filter error cases (409/404) not yet confirmed in Swagger; CHECK-constraint migration (Step 8); Claude setup + docs not yet committed
 
 ## Roadmap
 
@@ -29,16 +29,17 @@
 - [x] `ConfigModule` (global)
 - [x] Global `ValidationPipe`, `/api` prefix, shutdown hooks
 - [x] Swagger at `/docs`
-- [ ] Global exception filter (Prisma error mapping)
+- [x] Global exception filter (Prisma error mapping); Swagger verification pending
 - [ ] Health check endpoint
 
 ### Phase 3: Feature modules (CRUD)
 
 - [x] Categories
-- [ ] Authors (+ pagination/search)
-- [ ] Members
-- [ ] Books (relations: category, authors)
-- [ ] Loans
+- [x] Authors
+- [x] Members (unique email, status enum)
+- [x] Books (category connect, authors connect/set, ISBN validation, totalCopies change keeps on-loan copies)
+- [x] Loans (CRUD only; default due date 14 days; no stock changes until Phase 4)
+- [ ] DB-backed Swagger test pass for all modules
 
 ### Phase 4: Business logic (later)
 
@@ -49,15 +50,16 @@
 
 ### Phase 5: Testing
 
-- [ ] Unit tests (services)
+- [x] Unit tests: services (mocked `PrismaService` in `test/utils/prisma-mock.ts`), exception filter, DTO validation
 - [ ] E2E tests (separate test DB)
-- [ ] Coverage report
+- [x] Coverage report (`npm run test:cov`): ~89% lines, 77% branches
+- [ ] Controller unit tests (optional; covered by e2e later)
 
 ### Phase 6: Quality & CI
 
 - [ ] Lint/format/typecheck scripts
 - [ ] GitHub Actions CI with Postgres service
-- [ ] `.env.example`
+- [x] `.env.example` (prisma dev values; update when moving to Docker)
 
 ### Phase 7: Frontend (`web/`)
 
@@ -68,7 +70,7 @@
 
 - [x] `CLAUDE.md`, `docs/` (engagement, requirements, architecture, progress)
 - [x] ADRs 0001–0005
-- [ ] README
+- [x] README (root): overview, setup, scripts, API overview, error format, structure; update setup section after Docker
 
 ### AI / repo tooling
 
@@ -87,6 +89,7 @@
 | 2026-10-08 – 10-09 | Prisma init + config; `prisma dev` local DB; wrote schema; first migration; created `CLAUDE.md`; removed AI-tool folders Prisma created; first commits |
 | 2026-10-12         | Switched Prisma client to ESM; removed `prisma skills sync` postinstall; `PrismaService` + `ConfigModule`; validation + Swagger; Categories CRUD       |
 | 2026-10-13         | Claude Code setup: gitignores, `.claude/settings.json`, hooks, skills, `api/CLAUDE.md`, `docs/` and ADRs                                               |
+| 2026-10-14         | Global exception filter; Authors, Members, Books, Loans CRUD (written by Claude on request); shared `trim` transform                                   |
 
 ## Lessons learned
 
@@ -95,3 +98,4 @@
 - Prisma 7: DB URLs live in `prisma.config.ts`; `migrate dev` does not run `generate`.
 - NestJS 12 scaffolds an **ESM** project; generated code must match (`.js` import extensions).
 - Prisma can't express CHECK constraints; they go in hand-written migration SQL.
+- A non-`async` service method that throws does so synchronously, not as a rejected promise. Unit tests caught this in `LoansService.create`; keep service methods that can throw `async`.

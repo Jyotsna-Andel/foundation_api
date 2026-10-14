@@ -38,7 +38,7 @@ Each resource exposes, under the `/api` prefix:
 | `PATCH`  | `/api/<resource>/:id` | 200            |
 | `DELETE` | `/api/<resource>/:id` | 204 No Content |
 
-Resources: `categories` ✅, `authors`, `members`, `books`, `loans`.
+Resources: `categories` ✅, `authors` ✅, `members` ✅, `books` ✅, `loans` ✅ (CRUD only; stock changes come with FR-2).
 
 - **FR-1.1** Books can be created/updated with a `categoryId` and a list of `authorIds`.
 - **FR-1.2** Lists support pagination (`page`, `limit`) and simple search where useful (authors, books). _(planned)_
