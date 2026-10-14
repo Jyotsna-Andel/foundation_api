@@ -7,7 +7,7 @@
 - **Next step:** Finish WSL 2 install → Docker Compose Postgres → DB-backed Swagger test pass; commit
 - **Then:** CHECK-constraint migration → seed script → e2e tests (need DB) → CI
 - **Open decisions:** Docker Compose chosen for local Postgres. Docker Desktop installed, but the engine can't start until WSL 2 is installed (`wsl --install --no-distribution` as admin + restart); IT licensing confirmation pending
-- **Pending:** exception filter error cases (409/404) not yet confirmed in Swagger; CHECK-constraint migration (Step 8); Claude setup + docs not yet committed
+- **Pending:** exception filter error cases (409/404) not yet confirmed in Swagger; CHECK-constraint migration (Step 8). All work up to unit tests is committed and pushed (2026-10-14); build output (`dist/`, `tsbuildinfo`) untracked.
 
 ## Roadmap
 
