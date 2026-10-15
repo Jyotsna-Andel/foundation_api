@@ -11,7 +11,7 @@
 | Language    | TypeScript (strict)                                             |                                                                      |
 | ORM         | Prisma ORM **7.10** (CLI and client pinned to the same version) | `prisma-client` generator → `api/src/generated/prisma` (git-ignored) |
 | DB driver   | `@prisma/adapter-pg` + `pg`                                     | Prisma 7 uses driver adapters                                        |
-| Database    | PostgreSQL                                                      | Local: `npx prisma dev` (interim; see ADR-0005)                      |
+| Database    | PostgreSQL                                                      | Local: Docker Compose, `postgres:17-alpine` (ADR-0006) |
 | Validation  | `class-validator`, `class-transformer`                          |                                                                      |
 | API docs    | `@nestjs/swagger` (OpenAPI)                                     | `/docs`, `/docs-json`                                                |
 | Tests       | Vitest + Supertest                                              | ⏳                                                                   |
@@ -74,7 +74,7 @@ flowchart LR
 | Validation   | Global `ValidationPipe` (`whitelist`, `forbidNonWhitelisted`, `transform`)         | ✅     |
 | Shutdown     | `app.enableShutdownHooks()` → `PrismaService.onModuleDestroy`                      | ✅     |
 | API docs     | Swagger at `/docs`                                                                 | ✅     |
-| Errors       | `AllExceptionsFilter` via `APP_FILTER` | ✅ |
+| Errors       | `AllExceptionsFilter` via `APP_FILTER`                                             | ✅     |
 
 ## Data model
 
@@ -137,13 +137,18 @@ erDiagram
 
 ## Configuration
 
-| Variable              | Used by                            | Notes                               |
-| --------------------- | ---------------------------------- | ----------------------------------- |
-| `DATABASE_URL`        | App (`PrismaService`) + Prisma CLI | Required; app fails fast if missing |
-| `SHADOW_DATABASE_URL` | Prisma CLI (`migrate dev`)         | Dev only                            |
-| `PORT`                | `main.ts`                          | Defaults to 3000                    |
+| Variable       | Used by                            | Notes                               |
+| -------------- | ---------------------------------- | ----------------------------------- |
+| `DATABASE_URL` | App (`PrismaService`) + Prisma CLI | Required; app fails fast if missing |
+| `PORT`         | `main.ts`                          | Defaults to 3000                    |
 
-`.env` lives in `api/` and is git-ignored. An `.env.example` will document required variables ⏳.
+`.env` lives in `api/` and is git-ignored; `api/.env.example` documents the variables ✅. No `SHADOW_DATABASE_URL`: `prisma migrate dev` creates its own shadow database.
+
+## Local infrastructure
+
+| Service       | Definition                                               | Details                                                                                                                                                        |
+| ------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PostgreSQL 17 | `docker-compose.yml` (repo root), container `library-db` | `localhost:5432`; databases `library_dev`, `library_test` (init script in `docker/postgres/init/`); volume `db-data`; `pg_isready` health check. See ADR-0006. |
 
 ## Conventions
 

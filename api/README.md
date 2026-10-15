@@ -7,8 +7,8 @@ NestJS + Prisma + PostgreSQL backend for the Library Management project.
 ## Quick start
 
 ```bash
+# Database first, from the repo root: docker compose up -d
 cp .env.example .env     # PowerShell: Copy-Item .env.example .env
-npx prisma dev           # separate terminal; keep it running
 npx prisma migrate dev
 npx prisma generate
 npm run start:dev        # http://localhost:3000/api · docs at /docs

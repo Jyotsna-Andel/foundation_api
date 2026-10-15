@@ -1,6 +1,6 @@
 # ADR-0005: Local development database
 
-- **Status:** Accepted (interim), to be superseded
+- **Status:** Superseded by [ADR-0006](0006-docker-compose-postgres.md)
 - **Date:** 2026-10-09
 
 ## Context

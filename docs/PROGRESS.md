@@ -4,9 +4,9 @@
 
 - **Phase:** 3: Feature modules (CRUD only for now; business rules later)
 - **Done last:** Unit tests: 46 passing (all 5 services, exception filter, Book/Member DTO validation), ~89% line coverage; README, `api/README.md`, `.env.example`. Before that: all CRUD modules.
-- **Next step:** Finish WSL 2 install → Docker Compose Postgres → DB-backed Swagger test pass; commit
-- **Then:** CHECK-constraint migration → seed script → e2e tests (need DB) → CI
-- **Open decisions:** Docker Compose chosen for local Postgres. Docker Desktop installed, but the engine can't start until WSL 2 is installed (`wsl --install --no-distribution` as admin + restart); IT licensing confirmation pending
+- **Next step:** DB-backed Swagger test pass for all modules; commit the Docker setup
+- **Then:** CHECK-constraint migration → seed script → e2e tests (against `library_test`) → CI
+- **Local DB:** Docker Compose `library-db` (Postgres 17, `localhost:5432`, `library_dev` + `library_test`), init migration applied (ADR-0006). Docker Desktop licensing confirmation with IT still pending.
 - **Pending:** exception filter error cases (409/404) not yet confirmed in Swagger; CHECK-constraint migration (Step 8). All work up to unit tests is committed and pushed (2026-10-14); build output (`dist/`, `tsbuildinfo`) untracked.
 
 ## Roadmap
@@ -21,7 +21,7 @@
 - [x] First migration `20261009112716_init`
 - [ ] CHECK-constraint migration (hand-written SQL)
 - [ ] Seed script
-- [ ] Move local DB to Docker Compose or native PostgreSQL (decision pending)
+- [x] Move local DB to Docker Compose (`docker-compose.yml`, Postgres 17, `library_dev` + `library_test`; ADR-0006)
 
 ### Phase 2: App foundation
 
@@ -98,4 +98,7 @@
 - Prisma 7: DB URLs live in `prisma.config.ts`; `migrate dev` does not run `generate`.
 - NestJS 12 scaffolds an **ESM** project; generated code must match (`.js` import extensions).
 - Prisma can't express CHECK constraints; they go in hand-written migration SQL.
+- Docker Desktop started before WSL 2 was installed fails once and never retries; fully quit and restart it after installing WSL.
+- `docker compose` runs from the repo root; `npx prisma` / `npm` from `api/`. Running `npx prisma` elsewhere offers to install Prisma 8 RC: answer **no**.
+- If `SHADOW_DATABASE_URL` is set, Prisma expects that database to exist; leave it unset with a normal Postgres.
 - A non-`async` service method that throws does so synchronously, not as a rejected promise. Unit tests caught this in `LoansService.create`; keep service methods that can throw `async`.

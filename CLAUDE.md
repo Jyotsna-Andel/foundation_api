@@ -31,9 +31,10 @@
 
 ## Local database
 
-- Run `npx prisma dev` in a separate terminal (from `api/`) and keep it running.
-- `DATABASE_URL` = port 51214, `SHADOW_DATABASE_URL` = port 51215 (in `api/.env`, which Claude can't read; ask me).
-- Interim setup; moving to Docker Compose or native PostgreSQL is pending (ADR-0005).
+- Docker Compose (`docker-compose.yml` at repo root): container `library-db`, `postgres:17-alpine`, `localhost:5432`, user/password `library`/`library` (local only). See ADR-0006.
+- Databases: `library_dev` (app) and `library_test` (e2e). Start with `docker compose up -d` **from the repo root**.
+- `api/.env` has `DATABASE_URL` only (Claude can't read it; ask me). No `SHADOW_DATABASE_URL`: Prisma creates its own shadow DB.
+- `npx prisma dev` is no longer used.
 
 ## Claude Code setup (`.claude/`)
 
