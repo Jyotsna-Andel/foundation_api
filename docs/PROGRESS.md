@@ -2,12 +2,12 @@
 
 ## Current status
 
-- **Phase:** 3: Feature modules (CRUD only for now; business rules later)
-- **Done last:** Unit tests: 46 passing (all 5 services, exception filter, Book/Member DTO validation), ~89% line coverage; README, `api/README.md`, `.env.example`. Before that: all CRUD modules.
-- **Next step:** DB-backed Swagger test pass for all modules; commit the Docker setup
+- **Phase:** 7: Frontend (CRUD UI done); next: back-end quality (constraints, seed, e2e, CI)
+- **Done last:** React UI in `web/` for all 5 resources (Vite, Tailwind, TanStack Query, RHF + Zod; ADR-0007). Full stack smoke-tested through the Vite proxy (201/400/404/409 paths), which also completed the DB-backed test pass.
+- **Next step:** Commit the frontend; try the UI yourself (`docker compose up -d`, `npm run start:dev` in api/, `npm run dev` in web/)
 - **Then:** CHECK-constraint migration → seed script → e2e tests (against `library_test`) → CI
 - **Local DB:** Docker Compose `library-db` (Postgres 17, `localhost:5432`, `library_dev` + `library_test`), init migration applied (ADR-0006). Docker Desktop licensing confirmation with IT still pending.
-- **Pending:** exception filter error cases (409/404) not yet confirmed in Swagger; CHECK-constraint migration (Step 8). All work up to unit tests is committed and pushed (2026-10-14); build output (`dist/`, `tsbuildinfo`) untracked.
+- **Pending:** CHECK-constraint migration (Step 8). Author bio cannot be cleared to empty via the UI/API yet (API ignores empty/undefined).
 
 ## Roadmap
 
@@ -39,7 +39,7 @@
 - [x] Members (unique email, status enum)
 - [x] Books (category connect, authors connect/set, ISBN validation, totalCopies change keeps on-loan copies)
 - [x] Loans (CRUD only; default due date 14 days; no stock changes until Phase 4)
-- [ ] DB-backed Swagger test pass for all modules
+- [x] DB-backed test pass for all modules (via the UI smoke test, 2026-10-15)
 
 ### Phase 4: Business logic (later)
 
@@ -63,8 +63,10 @@
 
 ### Phase 7: Frontend (`web/`)
 
-- [ ] React + Vite + TanStack Query
-- [ ] Pages: Books, Members, Borrow/Return
+- [x] React 19 + Vite + TypeScript strict, Tailwind 4, React Router 8, TanStack Query 5, React Hook Form + Zod 4 (ADR-0007)
+- [x] CRUD pages: Books (search, relations, copies), Loans (status, mark returned, due date), Members, Authors, Categories
+- [ ] Borrow/Return UI (after Phase 4 endpoints)
+- [ ] Frontend tests (Vitest + Testing Library)
 
 ### Phase 8: Documentation
 
@@ -90,6 +92,7 @@
 | 2026-10-12         | Switched Prisma client to ESM; removed `prisma skills sync` postinstall; `PrismaService` + `ConfigModule`; validation + Swagger; Categories CRUD       |
 | 2026-10-13         | Claude Code setup: gitignores, `.claude/settings.json`, hooks, skills, `api/CLAUDE.md`, `docs/` and ADRs                                               |
 | 2026-10-14         | Global exception filter; Authors, Members, Books, Loans CRUD (written by Claude on request); shared `trim` transform                                   |
+| 2026-10-14 – 10-15 | Unit tests (46); README + env template; Docker Compose Postgres (ADR-0006); React UI for all resources (ADR-0007); full-stack smoke test               |
 
 ## Lessons learned
 

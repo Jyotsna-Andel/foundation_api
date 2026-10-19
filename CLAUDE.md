@@ -15,11 +15,13 @@
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): stack, layers, layout, data model, error model, conventions
 - [docs/adr/](docs/adr/): decisions. Add a new ADR for every decision with trade-offs.
 - Backend coding conventions: [api/CLAUDE.md](api/CLAUDE.md)
+- Frontend coding conventions: [web/CLAUDE.md](web/CLAUDE.md)
 
 ## Stack
 
 - `api/`: NestJS 12 (ESM), TypeScript strict, Prisma ORM 7.10 + PostgreSQL, Vitest, oxlint
-- `web/` (later): React
+- `web/`: React 19 + Vite + TypeScript strict, Tailwind 4, React Router 8, TanStack Query 5, React Hook Form + Zod 4 (ADR-0007). Dev server :5173 proxies `/api` to :3000.
+- Which folder: `docker compose` from the repo root; `npm`/`npx prisma` for the API from `api/`; `npm` for the UI from `web/`.
 
 ## Gotchas
 

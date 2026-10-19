@@ -4,19 +4,19 @@
 
 ## Stack
 
-| Layer       | Technology                                                      | Notes                                                                |
-| ----------- | --------------------------------------------------------------- | -------------------------------------------------------------------- |
-| Runtime     | Node.js 24, **ESM** (`"type": "module"`)                        | Relative imports use `.js` extensions (`nodenext`)                   |
-| Framework   | NestJS 12                                                       | Modules, DI, pipes, filters                                          |
-| Language    | TypeScript (strict)                                             |                                                                      |
-| ORM         | Prisma ORM **7.10** (CLI and client pinned to the same version) | `prisma-client` generator → `api/src/generated/prisma` (git-ignored) |
-| DB driver   | `@prisma/adapter-pg` + `pg`                                     | Prisma 7 uses driver adapters                                        |
-| Database    | PostgreSQL                                                      | Local: Docker Compose, `postgres:17-alpine` (ADR-0006) |
-| Validation  | `class-validator`, `class-transformer`                          |                                                                      |
-| API docs    | `@nestjs/swagger` (OpenAPI)                                     | `/docs`, `/docs-json`                                                |
-| Tests       | Vitest + Supertest                                              | ⏳                                                                   |
-| Lint/format | oxlint, Prettier                                                |                                                                      |
-| Frontend    | React                                                           | ⏳ later phase                                                       |
+| Layer       | Technology                                                                             | Notes                                                                |
+| ----------- | -------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| Runtime     | Node.js 24, **ESM** (`"type": "module"`)                                               | Relative imports use `.js` extensions (`nodenext`)                   |
+| Framework   | NestJS 12                                                                              | Modules, DI, pipes, filters                                          |
+| Language    | TypeScript (strict)                                                                    |                                                                      |
+| ORM         | Prisma ORM **7.10** (CLI and client pinned to the same version)                        | `prisma-client` generator → `api/src/generated/prisma` (git-ignored) |
+| DB driver   | `@prisma/adapter-pg` + `pg`                                                            | Prisma 7 uses driver adapters                                        |
+| Database    | PostgreSQL                                                                             | Local: Docker Compose, `postgres:17-alpine` (ADR-0006)               |
+| Validation  | `class-validator`, `class-transformer`                                                 |                                                                      |
+| API docs    | `@nestjs/swagger` (OpenAPI)                                                            | `/docs`, `/docs-json`                                                |
+| Tests       | Vitest + Supertest                                                                     | ⏳                                                                   |
+| Lint/format | oxlint, Prettier                                                                       |                                                                      |
+| Frontend    | React 19 + Vite, Tailwind 4, React Router 8, TanStack Query 5, React Hook Form + Zod 4 | `web/`; see Frontend section and ADR-0007                            |
 
 ## Repository layout
 
@@ -25,6 +25,8 @@ Foundation_API/
 ├── CLAUDE.md                  # AI instructions index
 ├── .claude/                   # Claude Code settings, hooks, skills (shared)
 ├── docs/                      # requirements, architecture, progress, ADRs
+├── docker-compose.yml         # local PostgreSQL (ADR-0006)
+├── web/                       # React UI (see Frontend section)
 └── api/                       # NestJS backend
     ├── prisma/
     │   ├── schema.prisma      # data model
@@ -143,6 +145,27 @@ erDiagram
 | `PORT`         | `main.ts`                          | Defaults to 3000                    |
 
 `.env` lives in `api/` and is git-ignored; `api/.env.example` documents the variables ✅. No `SHADOW_DATABASE_URL`: `prisma migrate dev` creates its own shadow database.
+
+## Frontend (`web/`)
+
+```mermaid
+flowchart LR
+    P[Page component<br/>features/&lt;resource&gt;] --> H[TanStack Query hooks<br/>api/hooks.ts]
+    P --> F[Form<br/>React Hook Form + Zod]
+    F --> H
+    H --> CL[apiFetch<br/>api/client.ts]
+    CL -- "/api/* (Vite proxy in dev)" --> API[NestJS API :3000]
+    API -. error JSON .-> CL
+    CL -. ApiError .-> P
+```
+
+| Piece           | Responsibility                                                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `api/client.ts` | Typed `fetch`; parses the API error shape into `ApiError` (status, code, message list); 204 → `undefined`                            |
+| `api/types.ts`  | Response/request types mirroring the API DTOs (maintained by hand)                                                                   |
+| `api/hooks.ts`  | `createResourceHooks` → `useList/useCreate/useUpdate/useRemove`; mutations invalidate related queries (e.g. category change → books) |
+| `features/*`    | One page per resource: `DataTable`, form in `Modal`, `ConfirmDelete` that shows 409s instead of closing                              |
+| Zod schemas     | Mirror DTO rules for instant feedback; the API remains the source of truth                                                           |
 
 ## Local infrastructure
 

@@ -1,21 +1,22 @@
 # Library Management API
 
-A REST API for a small library: categories, authors, books, members and loans. Built as the **P1 Foundation API** learning project, focused on backend fundamentals: modules, DTOs and validation, relational SQL and migrations, consistent error handling and clean architecture.
+A REST API and React UI for a small library: categories, authors, books, members and loans. Built as the **P1 Foundation API** learning project, focused on backend fundamentals: modules, DTOs and validation, relational SQL and migrations, consistent error handling and clean architecture.
 
-> **Status:** CRUD for all resources is implemented. Borrow/return business rules, tests, CI and the React frontend are in progress. See [docs/PROGRESS.md](docs/PROGRESS.md).
+> **Status:** CRUD API, unit tests and the React UI for all resources are implemented. Borrow/return business rules, e2e tests and CI are next. See [docs/PROGRESS.md](docs/PROGRESS.md).
 
 ## Tech stack
 
-| Area          | Technology                                |
-| ------------- | ----------------------------------------- |
-| Runtime       | Node.js 24 (ESM)                          |
-| Framework     | NestJS 12, TypeScript (strict)            |
-| Database      | PostgreSQL                                |
-| ORM           | Prisma ORM 7.10 with `@prisma/adapter-pg` |
-| Validation    | `class-validator`, `class-transformer`    |
-| API docs      | OpenAPI / Swagger (`@nestjs/swagger`)     |
-| Tests         | Vitest, Supertest                         |
-| Lint / format | oxlint, Prettier                          |
+| Area          | Technology                                                                                  |
+| ------------- | ------------------------------------------------------------------------------------------- |
+| Runtime       | Node.js 24 (ESM)                                                                            |
+| Framework     | NestJS 12, TypeScript (strict)                                                              |
+| Database      | PostgreSQL                                                                                  |
+| ORM           | Prisma ORM 7.10 with `@prisma/adapter-pg`                                                   |
+| Validation    | `class-validator`, `class-transformer`                                                      |
+| API docs      | OpenAPI / Swagger (`@nestjs/swagger`)                                                       |
+| Tests         | Vitest, Supertest                                                                           |
+| Lint / format | oxlint, Prettier                                                                            |
+| Frontend      | React 19, Vite, Tailwind CSS, TanStack Query, React Hook Form + Zod ([web/](web/README.md)) |
 
 ## Getting started
 
@@ -55,6 +56,18 @@ The database container (`library-db`) provides `library_dev` for development and
 | **Reset** (deletes all data) | `docker compose down -v`, then `up -d` and `npx prisma migrate dev` |
 
 The API runs at **http://localhost:3000/api**. Interactive docs are at **http://localhost:3000/docs** (raw OpenAPI JSON at `/docs-json`).
+
+### Frontend
+
+In a second terminal, with the API running:
+
+```bash
+cd web
+npm install
+npm run dev                  # http://localhost:5173
+```
+
+Vite proxies `/api` to the API on port 3000. See [web/README.md](web/README.md).
 
 > Always run `npx prisma …` from `api/`. Run elsewhere, `npx` downloads a different Prisma version ([ADR-0002](docs/adr/0002-pin-prisma-7-and-esm.md)).
 
@@ -134,6 +147,12 @@ Foundation_API/
 │       ├── common/       # exception filter, shared transforms
 │       ├── prisma/       # PrismaService (shared DB client)
 │       └── <resource>/   # one feature module per resource: dto/, controller, service, module
+├── web/                  # React UI (Vite)
+│   └── src/
+│       ├── api/          # typed fetch client, types, TanStack Query hooks
+│       ├── components/   # layout, modal, form fields, table
+│       └── features/     # one page per resource
+├── docker-compose.yml    # local PostgreSQL
 ├── docs/                 # requirements, architecture, progress, ADRs
 └── .claude/              # Claude Code settings, hooks and skills
 ```
