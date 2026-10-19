@@ -82,19 +82,19 @@ See [api/.env.example](api/.env.example).
 
 ## Scripts (`api/`)
 
-| Command                                  | What it does                                               |
-| ---------------------------------------- | ---------------------------------------------------------- |
-| `npm run start:dev`                      | Start with auto-reload                                     |
-| `npm run build`                          | Compile to `dist/`                                         |
-| `npm run start:prod`                     | Run the compiled build                                     |
-| `npm run lint`                           | Lint with oxlint (type-aware)                              |
-| `npm run format`                         | Format with Prettier                                       |
-| `npm test`                               | Unit tests                                                 |
-| `npm run test:cov`                       | Unit tests with coverage                                   |
-| `npm run test:e2e`                       | End-to-end tests                                           |
-| `npx prisma migrate dev --name <change>` | Create and apply a migration after editing `schema.prisma` |
-| `npx prisma generate`                    | Regenerate the Prisma Client                               |
-| `npx prisma studio`                      | Browse the database in the browser                         |
+| Command                                  | What it does                                                                                   |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `npm run start:dev`                      | Start with auto-reload                                                                         |
+| `npm run build`                          | Compile to `dist/`                                                                             |
+| `npm run start:prod`                     | Run the compiled build                                                                         |
+| `npm run lint`                           | Lint with oxlint (type-aware)                                                                  |
+| `npm run format`                         | Format with Prettier                                                                           |
+| `npm test`                               | Unit tests                                                                                     |
+| `npm run test:cov`                       | Unit tests with coverage                                                                       |
+| `npm run test:e2e`                       | End-to-end tests against `library_test` (Docker DB must be running; migrates it automatically) |
+| `npx prisma migrate dev --name <change>` | Create and apply a migration after editing `schema.prisma`                                     |
+| `npx prisma generate`                    | Regenerate the Prisma Client                                                                   |
+| `npx prisma studio`                      | Browse the database in the browser                                                             |
 
 ## API overview
 

@@ -2,10 +2,10 @@
 
 ## Current status
 
-- **Phase:** 7: Frontend (CRUD UI done); next: back-end quality (constraints, seed, e2e, CI)
-- **Done last:** React UI in `web/` for all 5 resources (Vite, Tailwind, TanStack Query, RHF + Zod; ADR-0007). Full stack smoke-tested through the Vite proxy (201/400/404/409 paths), which also completed the DB-backed test pass.
-- **Next step:** Commit the frontend; try the UI yourself (`docker compose up -d`, `npm run start:dev` in api/, `npm run dev` in web/)
-- **Then:** CHECK-constraint migration → seed script → e2e tests (against `library_test`) → CI
+- **Phase:** 5–6: Testing & quality (unit + e2e done); remaining for P1: CHECK-constraint migration, CI
+- **Done last:** 54 e2e tests (6 files) against the real app + `library_test` (Supertest); shared `configureApp()` so tests use the same prefix/validation as `main.ts`. Before that: React UI (ADR-0007).
+- **Next step:** CHECK-constraint migration (hand-written SQL), then add e2e tests proving the DB rejects bad data
+- **Then:** GitHub Actions CI (lint, typecheck, unit, e2e with Postgres service, build for api + web) → seed script (optional)
 - **Local DB:** Docker Compose `library-db` (Postgres 17, `localhost:5432`, `library_dev` + `library_test`), init migration applied (ADR-0006). Docker Desktop licensing confirmation with IT still pending.
 - **Pending:** CHECK-constraint migration (Step 8). Author bio cannot be cleared to empty via the UI/API yet (API ignores empty/undefined).
 
@@ -51,7 +51,7 @@
 ### Phase 5: Testing
 
 - [x] Unit tests: services (mocked `PrismaService` in `test/utils/prisma-mock.ts`), exception filter, DTO validation
-- [ ] E2E tests (separate test DB)
+- [x] E2E tests: 54 tests, real AppModule + `library_test` (auto-migrated in `test/global-setup-e2e.ts`, tables truncated before each test, refuses non-`*_test` DBs)
 - [x] Coverage report (`npm run test:cov`): ~89% lines, 77% branches
 - [ ] Controller unit tests (optional; covered by e2e later)
 

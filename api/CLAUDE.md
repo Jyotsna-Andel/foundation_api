@@ -51,4 +51,4 @@ Loaded when working in `api/`. Project-wide rules are in the root `CLAUDE.md`; t
 ## Tests
 
 - Unit: `*.spec.ts` next to the file; mock `PrismaService`. Run `npm test`.
-- E2E: `test/*.e2e-spec.ts` against a separate test database. Run `npm run test:e2e`.
+- E2E: `test/*.e2e-spec.ts` against `library_test` (override with `TEST_DATABASE_URL`). Use `createTestApp()` / `resetDatabase()` / factories from `test/utils/e2e-app.ts`. App HTTP setup lives in `src/app.setup.ts` (`configureApp`): change it there, never only in `main.ts`. Run `npm run test:e2e`.
