@@ -82,6 +82,9 @@
 - [x] Skills: `new-crud-module`, `update-docs`, `commit-step`
 - [x] `api/CLAUDE.md` (backend conventions); root `CLAUDE.md` updated as an index (ESM fix, docs links)
 - [ ] Refine `new-crud-module` skill after Authors and Members
+- [x] Knowledge handover skills: `/handover-interview` (ownership risk map, guided interview, approved cards, coverage) and `/ask-why` (cited Q&A); `docs/knowledge/` (ADR-0008)
+- [x] Handover skill hardening: `validate.mjs` (links, anchors, consent/approval, secret scan) + `index.mjs` (generated INDEX), explicit transcript anchors, `allowed-tools`. First session (Jyotsna, 2026-10-19) closed as partial: no cards yet.
+- [ ] Handover skill round 2: staleness detection, `.mailmap`, `reference/` split, explicit resume state; run `validate.mjs` in CI
 
 ## Session log
 

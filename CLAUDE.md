@@ -42,6 +42,7 @@
 
 - Hooks: `guard.mjs` blocks `.env` access and destructive commands; `format.mjs` runs Prettier after edits; `session-context.mjs` loads PROGRESS status at session start.
 - Skills: `/new-crud-module <resource>`, `/update-docs`, `/commit-step`.
+- Knowledge handover (ADR-0008): `/handover-interview` (manual only; confirms the person is leaving before doing anything) and `/ask-why <question>` (cited answers from `docs/knowledge/`, or "Not captured yet").
 
 ## Definition of Done (P1)
 
